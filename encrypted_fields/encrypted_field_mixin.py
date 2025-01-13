@@ -7,6 +7,8 @@ class EncryptedFieldMixin:
     Mixin genérico para adicionar criptografia/descriptografia a campos do Django.
     """
     def __init__(self, *args, **kwargs):
+        if not hasattr(settings, 'ENCRYPTION_KEY'):
+            raise ValueError("ENCRYPTION_KEY must be set in your environment.")
         self.cipher = Fernet(settings.ENCRYPTION_KEY)
         super().__init__(*args, **kwargs)
 
