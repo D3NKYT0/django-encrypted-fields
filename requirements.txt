@@ -1,2 +1,4 @@
 django
 cryptography
+pillow
+setuptools
