@@ -13,7 +13,8 @@ Esta biblioteca utiliza o módulo `cryptography.fernet` para garantir a criptogr
 
 ## Requisitos
 
-- Django 3.10 ou superior
+- Python 3.10 ou superior
+- Django 4.2 ou superior
 - Biblioteca `cryptography`
 - Biblioteca `pillow`
 - Biblioteca `django`
