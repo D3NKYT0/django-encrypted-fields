@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="django-encrypted-fields",
+    name="django-encrypted-fields-and-files",
     version="0.1.0",
     packages=find_packages(),
     install_requires=["Django>=4.2", "cryptography>=44.0.0", "pillow>=11.1.0"],
