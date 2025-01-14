@@ -48,8 +48,5 @@ class EncryptedFieldMixin:
                 return value
         return value
 
-    def db_type(self, connection):
-        """
-        Define explicitamente o tipo de dado no banco de dados como TEXT.
-        """
-        return "TEXT"
+    def get_internal_type(self):
+            return "TextField"
