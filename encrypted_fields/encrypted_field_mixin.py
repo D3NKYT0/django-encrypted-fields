@@ -47,3 +47,9 @@ class EncryptedFieldMixin:
             except Exception:
                 return value
         return value
+
+    def db_type(self, connection):
+        """
+        Define explicitamente o tipo de dado no banco de dados como TEXT.
+        """
+        return "TEXT"
