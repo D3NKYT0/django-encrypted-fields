@@ -49,4 +49,4 @@ class EncryptedFieldMixin:
         return value
 
     def get_internal_type(self):
-            return "TextField"
+        return "TextField"
