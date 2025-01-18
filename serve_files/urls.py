@@ -13,5 +13,5 @@ base_url_serve_decrypted_file = settings.SERVE_DECRYPTED_FILE_URL_BASE.rstrip('/
 
 # Criar a URL diretamente no path
 urlpatterns = [
-    path(f'{base_url_serve_decrypted_file}/<str:app_name>/<str:model_name>/<str:field_name>/<int:pk>/', serve_decrypted_file, name='serve_decrypted_file'),
+    path(f'{base_url_serve_decrypted_file}/<str:app_name>/<str:model_name>/<str:field_name>/<str:uuid>/', serve_decrypted_file, name='serve_decrypted_file'),
 ]

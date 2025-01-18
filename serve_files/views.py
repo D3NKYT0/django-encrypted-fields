@@ -12,13 +12,13 @@ from encrypted_fields.encrypted_files import *
 
 
 # Create your views here.
-def serve_decrypted_file(request, app_name, model_name, field_name, pk):
+def serve_decrypted_file(request, app_name, model_name, field_name, uuid):
     """
     View para descriptografar e retornar o arquivo (imagem ou qualquer outro) com cache de 5 minutos.
     """
     try:
         # Tenta recuperar o arquivo do cache
-        cache_key = f"{app_name}_{model_name}_{field_name}_{pk}"
+        cache_key = f"{app_name}_{model_name}_{field_name}_{uuid}"
         cached_file = cache.get(cache_key)
 
         if cached_file:
@@ -34,7 +34,7 @@ def serve_decrypted_file(request, app_name, model_name, field_name, pk):
             return HttpResponse("Modelo não encontrado.", status=404)
         
         # Busca o objeto pelo ID (pk)
-        obj = model.objects.filter(pk=pk).first()
+        obj = model.objects.filter(uuid=uuid).first()
         if not obj:
             return HttpResponse("Objeto não encontrado.", status=404)
         
