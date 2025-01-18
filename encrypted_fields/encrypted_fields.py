@@ -1,12 +1,52 @@
 from django.db import models
 from datetime import datetime
 from .encrypted_field_mixin import EncryptedFieldMixin
+from django.core.validators import MaxValueValidator, MinValueValidator
+from django.utils.functional import cached_property
+from django.db.backends.base.operations import BaseDatabaseOperations
 
 
 class EncryptedIntegerField(EncryptedFieldMixin, models.IntegerField):
     """
     Campo criptografado para valores inteiros.
     """
+    @cached_property
+    def validators(self) -> list[MinValueValidator | MaxValueValidator]:
+        # These validators can't be added at field initialization time since
+        # they're based on values retrieved from `connection`.
+        validators_ = [*self.default_validators, *self._validators]
+        internal_type = models.IntegerField().get_internal_type()
+        min_value, max_value = BaseDatabaseOperations.integer_field_ranges[
+            internal_type
+        ]
+        if min_value is not None and not any(
+            (
+                isinstance(validator, MinValueValidator)
+                and (
+                    validator.limit_value()
+                    if callable(validator.limit_value)
+                    else validator.limit_value
+                )
+                >= min_value
+            )
+            for validator in validators_
+        ):
+            validators_.append(MinValueValidator(min_value))
+        if max_value is not None and not any(
+            (
+                isinstance(validator, MaxValueValidator)
+                and (
+                    validator.limit_value()
+                    if callable(validator.limit_value)
+                    else validator.limit_value
+                )
+                <= max_value
+            )
+            for validator in validators_
+        ):
+            validators_.append(MaxValueValidator(max_value))
+        return validators_
+
     def cast_value(self, value):
         return int(value)
 
