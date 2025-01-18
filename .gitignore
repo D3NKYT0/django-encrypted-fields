@@ -5,6 +5,9 @@ __pycache__/
 core/
 manage.py
 
+serve_files/admin.py
+serve_files/models.py
+
 # Migrações do Django
 **/migrations/**
 !**/migrations/
