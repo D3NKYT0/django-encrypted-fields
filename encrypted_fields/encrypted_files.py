@@ -4,6 +4,7 @@ from io import BytesIO
 from .encrypted_file_mixin import EncryptedFileMixin
 from django.core.files.storage import default_storage
 from PIL import Image
+import os
 
 
 class EncryptedFileField(models.FileField):
@@ -16,20 +17,19 @@ class EncryptedFileField(models.FileField):
         self.cryptographer = EncryptedFileMixin()  # Instanciando o EncryptedFileMixin para usá-lo
 
     def pre_save(self, model_instance, add):
-        """
-        Antes de salvar o arquivo, criptografa o conteúdo.
-        """
-        file = getattr(model_instance, self.attname)
-        
-        if file:
-            if file.size == 0:  # Verifica se o arquivo está vazio
-                model_instance.__dict__[self.attname] = None  # Define como None se estiver vazio
+        image = getattr(model_instance, self.attname)
+
+        if image:
+            if image.size == 0:
+                model_instance.__dict__[self.attname] = None
             else:
-                encrypted_file = self._encrypt_file(file)  # Criptografa o arquivo
-                model_instance.__dict__[self.attname] = encrypted_file
+                # Corrige o nome do arquivo
+                image.name = os.path.basename(image.name)
+                encrypted_image = self._encrypt_image(image)
+                model_instance.__dict__[self.attname] = encrypted_image
         else:
-            model_instance.__dict__[self.attname] = None  # Define como None se não houver arquivo
-        
+            model_instance.__dict__[self.attname] = None
+
         return super().pre_save(model_instance, add)
 
     def _encrypt_file(self, file):
@@ -93,21 +93,20 @@ class EncryptedImageField(models.ImageField):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.cryptographer = EncryptedFileMixin()  # Instanciando o EncryptedFileMixin para usá-lo
-
+    
     def pre_save(self, model_instance, add):
-        """
-        Antes de salvar a imagem, criptografa o conteúdo.
-        """
         image = getattr(model_instance, self.attname)
 
         if image:
-            if image.size == 0:  # Verifica se o arquivo está vazio
-                model_instance.__dict__[self.attname] = None  # Define como None se estiver vazio
+            if image.size == 0:
+                model_instance.__dict__[self.attname] = None
             else:
-                encrypted_image = self._encrypt_image(image)  # Criptografa a imagem
+                # Corrige o nome do arquivo
+                image.name = os.path.basename(image.name)
+                encrypted_image = self._encrypt_image(image)
                 model_instance.__dict__[self.attname] = encrypted_image
         else:
-            model_instance.__dict__[self.attname] = None  # Define como None se não houver arquivo
+            model_instance.__dict__[self.attname] = None
 
         return super().pre_save(model_instance, add)
 
